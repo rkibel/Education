@@ -27,20 +27,25 @@ def testCase():
                     distanceFrom2[adjNode] = newCost
                     heap.heappush(pq, (newCost, adjNode))
         
-        possiblePaths = [0 for i in range(n+1)]
-        possiblePaths[1] = 1
-        visited = set()
-        pq = []
-        heap.heappush(pq, 1)
-        while pq:
-            node = heap.heappop(pq)
-            visited.add(node)
-            for adjNode, _ in weights[node]:
-                if distanceFrom2[adjNode] < distanceFrom2[node]: 
-                    possiblePaths[adjNode] += possiblePaths[node]
-                    if not adjNode in visited and not adjNode in pq: heap.heappush(pq, adjNode)
+        possiblePaths = [0] * (n+1)
+        finishedIterating = [False] * (n+1)
+        def getPossiblePaths(start):
+            if start == 2:
+                finishedIterating[start] = True
+                possiblePaths[start] = 1
+                return
+            sum = 0
+            for adj, _ in weights[start]:
+                if distanceFrom2[start] > distanceFrom2[adj]:
+                    if not finishedIterating[adj]:
+                        getPossiblePaths(adj)
+                    sum += possiblePaths[adj]
+            possiblePaths[start] = sum
+            finishedIterating[start] = True
         
-        return possiblePaths[2]
+        getPossiblePaths(1)
+        return possiblePaths[1]
+    
     except:
         return -1
 
