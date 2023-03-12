@@ -28,20 +28,15 @@ def testCase():
                     heap.heappush(pq, (newCost, adjNode))
         
         possiblePaths = [0] * (n+1)
-        finishedIterating = [False] * (n+1)
         def getPossiblePaths(start):
             if start == 2:
-                finishedIterating[start] = True
                 possiblePaths[start] = 1
                 return
-            sum = 0
             for adj, _ in weights[start]:
                 if distanceFrom2[start] > distanceFrom2[adj]:
-                    if not finishedIterating[adj]:
+                    if possiblePaths[adj] == 0:
                         getPossiblePaths(adj)
-                    sum += possiblePaths[adj]
-            possiblePaths[start] = sum
-            finishedIterating[start] = True
+                    possiblePaths[start] += possiblePaths[adj]
         
         getPossiblePaths(1)
         return possiblePaths[1]

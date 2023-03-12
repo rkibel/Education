@@ -19,11 +19,14 @@ def testCase():
     nodeCost = defaultdict(lambda: float('inf'))
     nodeCost[s] = 0
     heap.heappush(pq, (0, s))
+
     while pq:
         _, node = heap.heappop(pq)
         visited.add(node)
+        
         for adjNode, weight in weights[node]:
             if adjNode in visited: continue
+            
             newCost = nodeCost[node] + weight
             if nodeCost[adjNode] > newCost:
                 goneThroughPath[adjNode] = (node == g and adjNode == h) or (node == h and adjNode == g) or goneThroughPath[node]
