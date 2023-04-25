@@ -1,0 +1,11 @@
+alphabet: {0, 1}
+start: start
+accepting: {f0, f1}
+start (0 -> q0) (1 -> q3)
+q0 (0 -> q1) (1 -> q2)
+q1 (0 -> f0) (1 -> f1)
+q2 (0 -> trap) (1 -> f1)
+q3 (0 -> trap) (1 -> q2)
+f0 (0 -> f0) (1 -> f1)
+f1 (0 -> trap) (1 -> f1)
+trap (. -> trap)

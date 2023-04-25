@@ -1,9 +1,0 @@
-alphabet: {0, 1}
-start: start
-accepting: {q3}
-start (0 -> q0) (1 -> trap)
-q0 (0 -> q1) (1 -> q2)
-q1 (0 -> q1) (1 -> q3)
-q2 (0 -> trap) (1 -> q3)
-q3 (0 -> trap) (1 -> q3)
-trap (. -> trap)

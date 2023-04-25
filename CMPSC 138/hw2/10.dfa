@@ -1,0 +1,9 @@
+alphabet: {0, 1}
+start: start
+accepting: {start, trap0, q0, q1, q2}
+start (0 -> q0) (1 -> trap0)
+q0 (0 -> q0) (1 -> q1)
+q1 (0 -> q0) (1 -> q2)
+q2 (0 -> q0) (1 -> trap1)
+trap0 (. -> trap0)
+trap1 (. -> trap1)
