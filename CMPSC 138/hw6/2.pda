@@ -1,0 +1,10 @@
+alphabet: {a, b}
+start: qstart
+accepting: {qaccept}
+
+qstart (_, _ -> S$, qloop)
+qloop (_, S -> AX, qloop) (_, S -> YB, qloop) (_, S -> ZbZaZ, qloop) (_, A -> aA, qloop) (_, A -> _, qloop) 
+qloop (_, B -> bB, qloop) (_, B -> _, qloop) (_, X -> a, qloop) (_, X -> aXb, qloop) (_, Y -> b, qloop) (_, Y -> aYb, qloop)
+qloop (_, Z -> aZ, qloop) (_, Z -> bZ, qloop) (_, Z -> _, qloop)
+qloop (a, a -> _, qloop) (b, b -> _, qloop)
+qloop (_, $ -> _, qaccept)

@@ -1,0 +1,8 @@
+alphabet: {0, 1}
+start: qstart
+accepting: {qaccept}
+
+qstart (_, _ -> S$, qloop)
+qloop (_, S -> S1S1S0S, qloop) (_, S -> S1S0S1S, qloop) (_, S -> S0S1S1S, qloop) (_, S -> _, qloop) 
+qloop (1, 1 -> _, qloop) (0, 0 -> _, qloop)
+qloop (_, $ -> _, qaccept)

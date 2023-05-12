@@ -1,0 +1,11 @@
+alphabet: {0, 1, #}
+start: qstart
+accepting: {qaccept}
+
+qstart (_, _ -> S$, qloop)
+qloop (_, S -> 0E1, qloop) (_, S -> 1E0, qloop) (_, S -> 0S0, qloop) (_, S -> 1S1, qloop) (_, S -> R1, qloop) (_, S -> R0, qloop) (_, S -> 0L, qloop) (_, S -> 1L, qloop) 
+qloop (_, E -> 0E0, qloop) (_, E -> 1E1, qloop) (_, E -> 0E1, qloop) (_, E -> 1E0, qloop) (_, E -> R, qloop) (_, E -> L, qloop) (_, E -> #, qloop) 
+qloop (_, R -> R1, qloop) (_, R -> R0, qloop) (_, R -> #, qloop)
+qloop (_, L -> 1L, qloop) (_, L -> 0L, qloop) (_, L -> #, qloop)
+qloop (1, 1 -> _, qloop) (0, 0 -> _, qloop) (#, # -> _, qloop)
+qloop (_, $ -> _, qaccept)

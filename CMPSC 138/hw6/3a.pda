@@ -1,0 +1,7 @@
+alphabet: {0, 1}
+start: qstart
+accepting: {qend}
+
+qstart (_, _ -> $, q0)
+q0 (1, _ -> a, q0) (0, _ -> a, q1)
+q1 (., _ -> a, q1) (., a -> _, q1) (_, $ -> _, qend)
