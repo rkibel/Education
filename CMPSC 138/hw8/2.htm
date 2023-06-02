@@ -1,0 +1,194 @@
+alphabet: {0, 1, x, y, #}
+
+def StartOfTape [[
+    start: q0
+    q0 (. -> .,S q1)
+    q1 (. -> ., R accept)
+]]
+
+// Move one cell right, without writing anything.
+def Right [[
+    start: q0
+    q0 (. -> .,R accept)
+]]
+
+def IsBeginning [[
+    start: q0
+    q0 (. -> ., L q1)
+    q1 (_ -> ., L accept)
+]]
+
+//Move one cell left, without writing anything.
+def Left [[
+    start: q0
+    q0 (. -> ., L accept)
+]]
+
+def Read(A) [[
+    start: q0
+    q0 ($A -> .,H accept)
+]]
+
+
+def Write(A) [[
+    start: q0
+    q0 (. -> $A,H accept)
+]]
+
+def EndOfTape {
+    while not Read(_) Right
+    accept
+}
+
+
+// Move right until we read a symbol in A.
+def FindRight(A) {
+    while not Read($A) Right
+    accept
+}
+
+def FindLeft(A) {
+    while not Read($A) Left
+    accept
+}
+
+def CorrectFormat {
+    StartOfTape
+    if Read(#) reject
+    while not Read(#) {
+        if Read(_) reject
+        Right
+    }
+    Right
+    while not Read(#) {
+        if Read(_) {
+            StartOfTape
+            accept
+        }
+        Right
+    }
+    reject
+}
+def CorrectFormat2 {
+    StartOfTape
+    if Read(1) accept
+    if Read(0) {
+        Right
+        if Read(#) accept
+    }
+    reject
+}
+
+def ValidAccept {
+    StartOfTape
+    while not Read(_) {
+        if Read(0) reject
+        if Read(1) reject
+        Right
+    }
+    StartOfTape
+    accept
+}
+
+def ShiftRight {
+    while not Read(_) Right
+    Left
+    while not Read(_) {
+        if Read(0) {
+            Right
+            Write(0)
+        }
+        else {
+            if Read(1) {
+                Right 
+                Write(1)
+            }
+            else {
+                Right
+                Write(#)
+            }
+        }
+        Left
+        Write(_)
+        Left
+    }
+    Write(_)
+    accept
+}
+
+
+def Main {
+    ShiftRight
+    StartOfTape
+    CorrectFormat
+    CorrectFormat2
+    StartOfTape
+    while not ValidAccept {
+        FindRight(#)
+        Left
+        while Read(y) Left
+        while Read(x) Left
+        if Read(_) reject
+        if Read(0) {
+            Write(x)
+            Right
+            if Read(x) {
+                EndOfTape
+                Left
+                while Read(y) Left
+                while Read(x) Left
+                if Read(0) Write(x)
+                else reject
+            }
+            else {
+                EndOfTape
+                Left
+                while Read(y) Left
+                while Read(x) Left
+                if Read(1) Write(x)
+                else reject
+            }
+        }
+        else {
+            Right
+            if Read(x) {
+                Left
+                Write(x)
+                EndOfTape
+                Left
+                while Read(y) Left
+                while Read(x) Left
+                if Read(1) Write(x)
+                else reject
+            }
+            else {
+                Left
+                Write(y)
+                Left
+                if Read(_) {
+                    Right
+                    EndOfTape
+                    Left
+                    while Read(y) Left
+                    while Read(x) Left
+                    if Read(0) {
+                        Left
+                        if Read(1) accept
+                        else reject
+                    }
+                    else reject
+                }
+                else {
+                    EndOfTape
+                    Left
+                    while Read(y) Left
+                    while Read(x) Left
+                    if Read(0) Write(y)
+                    else reject
+                }
+            }
+        }
+        StartOfTape
+    }
+    accept
+}
