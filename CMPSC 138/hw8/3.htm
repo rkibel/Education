@@ -1,0 +1,148 @@
+alphabet: {0, 1, #, x, y}
+
+def StartOfTape [[
+    start: q0
+    q0 (. -> .,S accept)
+]]
+
+def Right [[
+    start: q0
+    q0 (. -> .,R accept)
+]]
+
+def Left [[
+    start: q0
+    q0 (. -> ., L accept)
+]]
+
+def Read(A) [[
+    start: q0
+    q0 ($A -> .,H accept)
+]]
+
+
+def Write(A) [[
+    start: q0
+    q0 (. -> $A,H accept)
+]]
+
+def Even [[
+    start: q0
+    q0 ({0, 1} -> ., R q1) (_ -> _, R accept)
+    q1 ({0, 1} -> ., R q0)
+]]
+
+def FindRight(A) {
+    while not Read($A) {
+        if Read(_) reject
+        Right
+    }
+    accept
+}
+
+def ShiftRight {
+    while not Read(_) Right
+    Left
+    while not Read(#) {
+        if Read(0) {
+            Right
+            Write(0)
+        }
+        else {
+            Right
+            Write(1)
+        }
+        Left
+        Write(#)
+        Left
+    }
+    Write(#)
+    accept
+}
+
+def IsOld {
+    if Read(0) accept
+    if Read(1) accept
+    reject
+}
+
+def IsNew {
+    if Read(x) accept
+    if Read(y) accept
+    reject
+}
+
+def AreOrgs {
+    while IsNew {
+        if Read(_) reject
+        Right
+    }
+    if Read(_) reject
+    accept
+}
+
+def AreNews {
+    while IsOld {
+        if Read(_) reject
+        Right
+    }
+    if Read(_) reject
+    accept
+}
+
+def Main {
+    if Read(_) accept
+    if not Even reject
+    StartOfTape
+    ShiftRight
+    StartOfTape
+    FindRight(#)
+    Right
+    while AreOrgs {
+        if Read(0) Write(x)
+        else Write(y)
+        Right
+        if Read(0) Write(x)
+        else Write(y)
+        StartOfTape
+        FindRight(#)
+        Right
+        if Read(x) {
+            Write(#)
+            Left
+            Write(x)
+        }
+        else {
+            Write(#)
+            Left
+            Write(y)
+        }
+        Right
+        Right
+    }
+
+    StartOfTape
+    while AreNews {
+        if Read(#) accept
+        else {
+            if Read(x) {
+                Write(0)
+                FindRight(#)
+                Right
+                AreNews
+                if Read(x) Write(0)
+                else reject
+            }
+            else {
+                Write(1)
+                FindRight(#)
+                Right
+                AreNews
+                if Read(y) Write(1)
+                else reject
+            }
+            StartOfTape
+        }
+    }
+    accept
+}
