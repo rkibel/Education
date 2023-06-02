@@ -1,0 +1,314 @@
+alphabet: {A, B, C, D, E, F, 0, 1, b, x, !, |, R, L, p}
+
+def StartOfTape [[
+    start: q0
+    q0 (. -> .,S accept)
+]]
+
+def Right [[
+    start: q0
+    q0 (. -> .,R accept)
+]]
+
+def Left [[
+    start: q0
+    q0 (. -> ., L accept)
+]]
+
+def Read(A) [[
+    start: q0
+    q0 ($A -> .,H accept)
+]]
+
+def Write(A) [[
+    start: q0
+    q0 (. -> $A,H accept)
+]]
+
+def WriteLeft(A) {
+    Left
+    Write($A)
+    Right
+    accept
+}
+
+def WriteRight(A) {
+    Right
+    Write($A)
+    Left
+    accept
+}
+
+def EndOfTape {
+    while not Read(_) Right
+    accept
+}
+
+def FindRight(A) {
+    while not Read($A) Right
+    accept
+}
+
+def FindLeft(A) {
+    while not Read($A) Left
+    accept
+}
+
+def ShiftPLeft {
+    StartOfTape
+    FindRight(p)
+    Left
+    if Read(|) {
+        Right
+        accept
+    }
+    if Read(0) {
+        Write(p)
+        WriteRight(0)
+        accept
+    }
+    if Read(1) {
+        Write(p)
+        WriteRight(1)
+        accept
+    }
+    if Read(x) {
+        Write(p)
+        WriteRight(x)
+        accept
+    }
+    if Read(b) {
+        Write(p)
+        WriteRight(b)
+        accept
+    }
+    reject
+}
+
+def ShiftPRight {
+    StartOfTape
+    FindRight(p)
+    Right
+    if Read(0) {
+        Write(p)
+        WriteLeft(0)
+        accept
+    }
+    if Read(1) {
+        Write(p)
+        WriteLeft(1)
+        accept
+    }
+    if Read(x) {
+        Write(p)
+        WriteLeft(x)
+        accept
+    }
+    if Read(b) {
+        Write(p)
+        WriteLeft(b)
+        accept
+    }
+    if Read(_) {
+        Write(p)
+        WriteLeft(_)
+        accept
+    }
+    reject
+}
+
+def ValidRule {
+    if not Read({A, B, C, D, E, F}) reject
+    Right
+    if not Read({0, 1, x, b}) reject
+    Right
+    if not Read({0, 1, x, b}) reject
+    Right
+    if not Read({R, L}) reject
+    Right
+    if not Read({A, B, C, D, E, F}) reject
+    Right
+    accept
+}
+
+def CorrectFormat {
+    StartOfTape
+    if not Read(|) {
+        ValidRule
+        while Read(!) {
+            Right
+            ValidRule
+        }
+    }
+    if not Read(|) reject
+    Right
+    if not Read({A, B, C, D, E, F}) reject
+    Right
+    if not Read(|) reject
+    Right
+    if not Read(p) reject
+    Right
+    while Read({0, 1}) Right
+    if not Read(_) reject
+    accept
+}
+
+def FindRule(Q, S) {
+    StartOfTape
+    while not Read(_) {
+        if Read($Q) {
+            Right
+            if Read($S) {
+                Left
+                accept
+            }
+        }
+        FindRight({!, _})
+        Right
+    }
+    reject
+}
+
+def FindState {
+    StartOfTape
+    FindRight(|)
+    Right
+    accept
+}
+
+def FindTape {
+    StartOfTape
+    FindRight(p)
+    Right
+    accept
+}
+
+def Update(Q, S) {
+    FindRule($Q, $S)
+    Right
+    Right
+    if Read(0) {
+        FindTape
+        Write(0)
+    }
+    if Read(1) {
+        FindTape
+        Write(1)
+    }
+    if Read(x) {
+        FindTape
+        Write(x)
+    }
+    if Read(b) {
+        FindTape
+        Write(b)
+    }
+    FindRule($Q, $S)
+    Right
+    Right
+    Right
+    if Read(R) ShiftPRight
+    if Read(L) ShiftPLeft
+    FindRule($Q, $S)
+    Right
+    Right
+    Right
+    Right
+    if Read({A, B, C, D, E, F}) {
+        if Read(A) {
+            FindState
+            Write(A)
+        }
+        else {
+            if Read(B) {
+                FindState
+                Write(B)
+            }
+            else {
+                if Read(C) {
+                    FindState
+                    Write(C)
+                }
+                else {
+                    if Read(D) {
+                        FindState
+                        Write(D)
+                    }
+                    else {
+                        if Read(E) {
+                            FindState
+                            Write(E)
+                        }
+                        else {
+                            if Read(F) {
+                                FindState
+                                Write(F)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        accept
+    }
+    reject
+}
+
+def Main {
+    StartOfTape
+    CorrectFormat
+    StartOfTape
+    FindState
+    while not Read(A) {
+        if Read(B) {
+            FindTape
+            if Read(0) Update(B, 0)
+            if Read(1) Update(B, 1)
+            if Read(x) Update(B, x)
+            if Read(b) Update(B, b)
+            if Read(_) Update(B, b)
+        }
+        else {
+            if Read(C) {
+                FindTape
+                if Read(0) Update(C, 0)
+                if Read(1) Update(C, 1)
+                if Read(x) Update(C, x)
+                if Read(b) Update(C, b)
+                if Read(_) Update(C, b)
+            }
+            else {
+                if Read(D) {
+                    FindTape
+                    if Read(0) Update(D, 0)
+                    if Read(1) Update(D, 1)
+                    if Read(x) Update(D, x)
+                    if Read(b) Update(D, b)
+                    if Read(_) Update(D, b)
+                }
+                else {
+                    if Read(E) {
+                        FindTape
+                        if Read(0) Update(E, 0)
+                        if Read(1) Update(E, 1)
+                        if Read(x) Update(E, x)
+                        if Read(b) Update(E, b)
+                        if Read(_) Update(E, b)
+                    }
+                    else {
+                        if Read(F) {
+                            FindTape
+                            if Read(0) Update(F, 0)
+                            if Read(1) Update(F, 1)
+                            if Read(x) Update(F, x)
+                            if Read(b) Update(F, b)
+                            if Read(_) Update(F, b)
+                        }
+                    }
+                } 
+            }
+        }
+        FindState
+    }
+    accept
+}
